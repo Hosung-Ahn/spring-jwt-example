@@ -1,0 +1,29 @@
+spring :
+  # mysql
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/test?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: root
+    password: 1234
+
+  # jpa
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+        default_batch_fetch_size: 100
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+
+  # redis
+  data :
+    redis:
+      host: localhost
+      port: 6379
+
+secret :
+  secret-key: "ddhjfkafdshjlflhjdas3288998ksjkskj28kjas829uaw89242kl4jk12j6jk1jjjsa28jdska289kj289jdak282313212412312"
+  access-token-validity-in-seconds: 43200 # 12 hours
+  refresh-token-validity-in-seconds: 604800 # 1 week`

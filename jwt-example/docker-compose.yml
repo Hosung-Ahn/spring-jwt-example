@@ -1,10 +1,10 @@
 version: '3.8'
 services:
-  backend :
-    build : .
-    container_name: backend
-    ports:
-      - "8080:8080"
+#  backend :
+#    build : .
+#    container_name: backend
+#    ports:
+#      - "8080:8080"
 
   mysql:
     image: mysql:8.0
@@ -13,7 +13,7 @@ services:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: 1234
-      MYSQL_DATABASE: techtalk
+      MYSQL_DATABASE: test
     volumes:
       - mysql-data:/var/lib/mysql
 

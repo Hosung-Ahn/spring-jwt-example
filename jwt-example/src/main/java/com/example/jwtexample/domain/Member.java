@@ -1,6 +1,7 @@
 package com.example.jwtexample.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

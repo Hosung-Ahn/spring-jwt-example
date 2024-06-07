@@ -24,8 +24,9 @@ public class Member {
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Authority> authorities = new ArrayList<>();
 
-    public Member(String email, String password) {
+    public Member(String email, String password, List<EAuthority> eAuthorities) {
         this.email = email;
         this.password = password;
+        eAuthorities.forEach(eAuthority -> this.authorities.add(new Authority(eAuthority, this)));
     }
 }

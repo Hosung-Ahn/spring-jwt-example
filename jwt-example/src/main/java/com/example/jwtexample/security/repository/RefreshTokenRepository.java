@@ -20,7 +20,7 @@ public class RefreshTokenRepository {
         return "refresh_token:" + token;
     }
 
-    public void mapAtToRt(String refreshToken, String accessToken) {
+    public void mapRtToAt(String refreshToken, String accessToken) {
         redisTemplate.opsForValue().set(getKey(refreshToken), accessToken,
                 refreshTokenValidityInSeconds, TimeUnit.SECONDS);
     }

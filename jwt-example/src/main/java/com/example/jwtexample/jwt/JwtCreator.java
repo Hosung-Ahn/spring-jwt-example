@@ -1,18 +1,19 @@
 package com.example.jwtexample.jwt;
 
-import com.example.jwtexample.domain.Authority;
 import com.example.jwtexample.repository.AuthorityRepository;
+import com.example.jwtexample.security.userDetails.CustomUserDetails;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -26,35 +27,33 @@ public class JwtCreator {
     private Long refreshTokenValidityInSeconds;
     private Key key;
 
-    private final AuthorityRepository authorityRepository;
-
     @PostConstruct
     protected void init() {
         key = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public String createAccessToken(Long memberId) {
+    public String createAccessToken(Authentication authentication) {
         Date validity = getDateAfterSeconds(this.accessTokenValidityInSeconds);
 
-        return createToken(memberId, validity);
+        return createToken(authentication, validity);
     }
 
-    public String createRefreshToken(Long memberId) {
+    public String createRefreshToken(Authentication authentication) {
         Date validity = getDateAfterSeconds(this.refreshTokenValidityInSeconds);
-        return createToken(memberId, validity);
+        return createToken(authentication, validity);
     }
 
     private Date getDateAfterSeconds(long seconds) {
         return new Date(System.currentTimeMillis() + seconds * 1000);
     }
 
-    private String createToken(Long memberId, Date validity) {
-        List<Authority> authorities = authorityRepository.findAllByMemberId(memberId);
+    private String createToken(Authentication authentication, Date validity) {
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        String authorities = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
         return Jwts.builder()
-                .claim("memberId", memberId)
-                .claim("authorities", authorities.stream()
-                        .map(Authority::getName)
-                        .collect(Collectors.joining(",")))
+                .claim("memberId", userDetails.getMemberId())
+                .claim("authorities", authorities)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
                 .compact();

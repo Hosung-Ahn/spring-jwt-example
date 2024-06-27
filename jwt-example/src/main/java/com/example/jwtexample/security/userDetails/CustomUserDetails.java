@@ -18,6 +18,10 @@ public class CustomUserDetails implements UserDetails {
         ).toList();
     }
 
+    public Long getMemberId() {
+        return member.getId();
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;

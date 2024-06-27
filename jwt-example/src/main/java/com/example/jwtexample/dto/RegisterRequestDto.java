@@ -6,4 +6,9 @@ import lombok.Data;
 public class RegisterRequestDto {
     String email;
     String password;
+
+    public RegisterRequestDto(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
 }

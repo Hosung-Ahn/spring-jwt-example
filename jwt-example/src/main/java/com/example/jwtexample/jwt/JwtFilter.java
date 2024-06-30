@@ -32,7 +32,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 // (at 로 로그인 한 경우 앱 어디서든 context 에서 authentication 을 얻어올 수 있습니다.)
                 // (authenticaton 의 principal 에는 memberId 가 들어있습니다.)
                 // 그리고 다음 filter 에서 authentication 의 authorities 를 이용해 권한을 체크합니다.
-                Authentication authentication = authenticationCreator.createAuthentication(accessToken);
+                Authentication authentication = authenticationCreator.createByAccessToken(accessToken);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         } catch (Exception e) {

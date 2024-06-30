@@ -2,7 +2,6 @@ package com.example.jwtexample.security.service;
 
 import com.example.jwtexample.jwt.JwtClaimReader;
 import com.example.jwtexample.jwt.JwtValidator;
-import com.example.jwtexample.repository.AuthorityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -18,12 +17,21 @@ public class AuthenticationCreator {
     private final JwtClaimReader jwtClaimReader;
 
 
-    public Authentication createAuthentication(String accessToken) {
+    public Authentication createByAccessToken(String accessToken) {
         jwtValidator.validateAccessToken(accessToken);
 
         Long memberId = jwtClaimReader.getMemberId(accessToken);
         Collection<? extends GrantedAuthority> authorities = jwtClaimReader.getAuthorities(accessToken);
 
         return new UsernamePasswordAuthenticationToken(memberId, accessToken, authorities);
+    }
+
+    public Authentication createByRefreshToken(String refreshToken) {
+        jwtValidator.validateRefreshToken(refreshToken);
+
+        Long memberId = jwtClaimReader.getMemberId(refreshToken);
+        Collection<? extends GrantedAuthority> authorities = jwtClaimReader.getAuthorities(refreshToken);
+
+        return new UsernamePasswordAuthenticationToken(memberId, refreshToken, authorities);
     }
 }

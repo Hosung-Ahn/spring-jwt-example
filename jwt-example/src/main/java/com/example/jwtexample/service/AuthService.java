@@ -41,4 +41,8 @@ public class AuthService {
         SecurityContextHolder.getContext().setAuthentication(authenticate);
         return atRtService.create(authenticate);
     }
+
+    public AtRtDto refresh(String refreshToken) {
+        return atRtService.refresh(refreshToken);
+    }
 }

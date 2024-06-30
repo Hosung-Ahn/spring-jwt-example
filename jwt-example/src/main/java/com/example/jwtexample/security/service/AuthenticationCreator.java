@@ -14,7 +14,6 @@ import java.util.Collection;
 @Service
 @RequiredArgsConstructor
 public class AuthenticationCreator {
-    private final AuthorityRepository authorityRepository;
     private final JwtValidator jwtValidator;
     private final JwtClaimReader jwtClaimReader;
 
@@ -23,11 +22,7 @@ public class AuthenticationCreator {
         jwtValidator.validateAccessToken(accessToken);
 
         Long memberId = jwtClaimReader.getMemberId(accessToken);
-
-        Collection<GrantedAuthority> authorities = authorityRepository.findAllByMemberId(memberId)
-                .stream()
-                .map(authority -> (GrantedAuthority) authority::getName)
-                .toList();
+        Collection<? extends GrantedAuthority> authorities = jwtClaimReader.getAuthorities(accessToken);
 
         return new UsernamePasswordAuthenticationToken(memberId, accessToken, authorities);
     }

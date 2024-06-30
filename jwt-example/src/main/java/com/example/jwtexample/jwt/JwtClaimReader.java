@@ -5,9 +5,13 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Component
 public class JwtClaimReader {
@@ -35,7 +39,12 @@ public class JwtClaimReader {
         return getClaims(token).get("memberId", Long.class);
     }
 
-    public String getAuthorities(String token) {
-        return getClaims(token).get("authorities", String.class);
+    public Collection<? extends GrantedAuthority> getAuthorities(String token) {
+        Collection<SimpleGrantedAuthority> result = new ArrayList<>();
+        String[] authorities = getClaims(token).get("authorities", String.class).split(",");
+        for (String authority : authorities) {
+            result.add(new SimpleGrantedAuthority(authority));
+        }
+        return result;
     }
 }

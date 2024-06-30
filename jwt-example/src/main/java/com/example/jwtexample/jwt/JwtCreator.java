@@ -13,6 +13,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
@@ -38,9 +39,19 @@ public class JwtCreator {
         return createToken(authentication, validity);
     }
 
+    public String createAccessToken(Long memberId, Collection<? extends GrantedAuthority> authorities) {
+        Date validity = getDateAfterSeconds(this.accessTokenValidityInSeconds);
+        return createToken(memberId, authorities, validity);
+    }
+
     public String createRefreshToken(Authentication authentication) {
         Date validity = getDateAfterSeconds(this.refreshTokenValidityInSeconds);
         return createToken(authentication, validity);
+    }
+
+    public String createRefreshToken(Long memberId, Collection<? extends GrantedAuthority> authorities) {
+        Date validity = getDateAfterSeconds(this.refreshTokenValidityInSeconds);
+        return createToken(memberId, authorities, validity);
     }
 
     private Date getDateAfterSeconds(long seconds) {
@@ -54,6 +65,18 @@ public class JwtCreator {
         return Jwts.builder()
                 .claim("memberId", userDetails.getMemberId())
                 .claim("authorities", authorities)
+                .signWith(key, SignatureAlgorithm.HS512)
+                .setExpiration(validity)
+                .compact();
+    }
+
+    private String createToken(Long memberId, Collection<? extends GrantedAuthority> authorities, Date validity) {
+        String authoritiesString = authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+        return Jwts.builder()
+                .claim("memberId", memberId)
+                .claim("authorities", authoritiesString)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setExpiration(validity)
                 .compact();

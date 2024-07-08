@@ -33,20 +33,9 @@ public class JwtCreator {
         key = Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public String createAccessToken(Authentication authentication) {
-        Date validity = getDateAfterSeconds(this.accessTokenValidityInSeconds);
-
-        return createToken(authentication, validity);
-    }
-
     public String createAccessToken(Long memberId, Collection<? extends GrantedAuthority> authorities) {
         Date validity = getDateAfterSeconds(this.accessTokenValidityInSeconds);
         return createToken(memberId, authorities, validity);
-    }
-
-    public String createRefreshToken(Authentication authentication) {
-        Date validity = getDateAfterSeconds(this.refreshTokenValidityInSeconds);
-        return createToken(authentication, validity);
     }
 
     public String createRefreshToken(Long memberId, Collection<? extends GrantedAuthority> authorities) {
@@ -56,18 +45,6 @@ public class JwtCreator {
 
     private Date getDateAfterSeconds(long seconds) {
         return new Date(System.currentTimeMillis() + seconds * 1000);
-    }
-
-    private String createToken(Authentication authentication, Date validity) {
-        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        String authorities = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
-        return Jwts.builder()
-                .claim("memberId", userDetails.getMemberId())
-                .claim("authorities", authorities)
-                .signWith(key, SignatureAlgorithm.HS512)
-                .setExpiration(validity)
-                .compact();
     }
 
     private String createToken(Long memberId, Collection<? extends GrantedAuthority> authorities, Date validity) {

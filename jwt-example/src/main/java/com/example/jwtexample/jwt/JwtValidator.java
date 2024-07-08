@@ -1,7 +1,6 @@
 package com.example.jwtexample.jwt;
 
 import com.example.jwtexample.jwt.exception.InvalidJwtException;
-import com.example.jwtexample.jwt.exception.InvalidRefreshException;
 import com.example.jwtexample.security.repository.AccessTokenRepository;
 import com.example.jwtexample.security.repository.RefreshTokenRepository;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -45,10 +44,10 @@ public class JwtValidator {
         try {
             validateToken(refreshToken);
         } catch (InvalidJwtException e) {
-            throw new InvalidRefreshException("refresh token is invalid.");
+            throw new InvalidJwtException("refresh token is invalid.");
         }
         if (!refreshTokenRepository.isExist(refreshToken)) {
-            throw new InvalidRefreshException("refresh token expired or deleted.");
+            throw new InvalidJwtException("refresh token expired or deleted.");
         }
     }
 

@@ -23,6 +23,12 @@ public class AuthController {
         return ResponseEntity.ok("회원가입 성공");
     }
 
+    @PostMapping("/admin-register")
+    public ResponseEntity<String> adminRegister(@RequestBody RegisterRequestDto registerRequestDto) {
+        authService.adminRegister(registerRequestDto);
+        return ResponseEntity.ok("관리자 회원가입 성공");
+    }
+
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto loginRequestDto) {
         AtRtDto login = authService.login(loginRequestDto);

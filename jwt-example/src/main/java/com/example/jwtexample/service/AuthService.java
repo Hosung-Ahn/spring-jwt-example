@@ -27,6 +27,8 @@ public class AuthService {
         memberRepository.save(member);
     }
 
+
+
     public AtRtDto login(LoginRequestDto dto) {
         String email = dto.getEmail();
         String password = dto.getPassword();
@@ -44,5 +46,10 @@ public class AuthService {
 
     public AtRtDto refresh(String refreshToken) {
         return atRtService.refresh(refreshToken);
+    }
+
+    public void adminRegister(RegisterRequestDto registerRequestDto) {
+        Member member = memberFactory.createAdmin(registerRequestDto);
+        memberRepository.save(member);
     }
 }
